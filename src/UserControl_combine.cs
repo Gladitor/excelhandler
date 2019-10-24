@@ -25,7 +25,8 @@ namespace ExcelHandler
             bool allInOneSheet = this.checkBox_allInOneSheet.Checked;
             bool combineBySheet = this.checkBox_combinBySheet.Checked;
             bool appointSheet = this.checkBox_appointsheet.Checked;
-            if(allInOneSheet && !combineBySheet && !appointSheet)
+            bool appointSheetInOne = this.checkBox_allAppointInOneSheet.Checked;
+            if(allInOneSheet && !combineBySheet && !appointSheet && !appointSheetInOne)
             {
                 if(horizontal)
                 { }
@@ -35,7 +36,7 @@ namespace ExcelHandler
                 }
                 MessageBox.Show("合并完成!","提示",MessageBoxButtons.OK,MessageBoxIcon.Asterisk);
             }
-            else if(combineBySheet && !allInOneSheet && !appointSheet)
+            else if(combineBySheet && !allInOneSheet && !appointSheet && !appointSheetInOne)
             {
                 if (horizontal)
                 { }
@@ -45,13 +46,23 @@ namespace ExcelHandler
                 }
                 MessageBox.Show("合并完成!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
-            else if(appointSheet && !allInOneSheet && !combineBySheet)
+            else if(appointSheet && !allInOneSheet && !combineBySheet && !appointSheetInOne)
             {
                 if (horizontal)
                 { }
                 else
                 {
                     CombineAppointSheet();
+                }
+                MessageBox.Show("合并完成!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else if(appointSheetInOne && !allInOneSheet && !combineBySheet && !appointSheet)
+            {
+                if (horizontal)
+                { }
+                else
+                {
+                    CombineAppointSheetInOne();
                 }
                 MessageBox.Show("合并完成!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
@@ -153,7 +164,7 @@ namespace ExcelHandler
                 }
             }
         }
-        //合并指定Sheet到新文件
+        //合并指定Sheet到新文件对应Sheet
         void CombineAppointSheet()
         {
             string[] targetSheetNames = this.textBox_appointSheetName.Lines;
@@ -168,18 +179,51 @@ namespace ExcelHandler
             System.Windows.Forms.DialogResult result = fileDialog.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                string basestr = string.Empty;
-                string targetfilename = string.Empty;
                 string[] filenames = fileDialog.FileNames;
-                basestr = filenames[0];
-                targetfilename = basestr.Substring(0, basestr.LastIndexOf("\\") + 1) + "AllAppoint.xlsx";
+                string basestr = filenames[0];
+                string targetfilename = basestr.Substring(0, basestr.LastIndexOf("\\") + 1) + "AllAppoint.xlsx";
                 for (int i = 0; i < filenames.Length; i++)
                 {
                     for (int j = 0; j < targetSheetNames.Length; j++)
                     {
                         string targetSheetName = targetSheetNames[j];
-                        DataTable dt = ExcelUtil.ExcelToDataTable(targetSheetName, firstRowIsHead, filenames[i], false);
-                        ExcelUtil.DataTableToExcel(dt, targetfilename, targetSheetName);
+                        if(targetSheetName!="")
+                        {
+                            DataTable dt = ExcelUtil.ExcelToDataTable(targetSheetName, firstRowIsHead, filenames[i], false);
+                            ExcelUtil.DataTableToExcel(dt, targetfilename, targetSheetName);
+                        }
+                    }
+                }
+            }
+        }
+        //合并指定Sheet到新文件1个Sheet
+        void CombineAppointSheetInOne()
+        {
+            string[] targetSheetNames = this.textBox_appointSheetName.Lines;
+            bool firstRowIsHead = true;
+            if (!checkBox_firstrowishead.Checked)
+            {
+                firstRowIsHead = false;
+            }
+            //System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
+            fileDialog.Multiselect = true;
+            System.Windows.Forms.DialogResult result = fileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                string targetSheetName = "Sheet1";
+                string[] filenames = fileDialog.FileNames;
+                string basestr = filenames[0];
+                string targetfilename = basestr.Substring(0, basestr.LastIndexOf("\\") + 1) + "AllAppoint.xlsx";
+                for (int i = 0; i < filenames.Length; i++)
+                {
+                    for (int j = 0; j < targetSheetNames.Length; j++)
+                    {
+                        if(targetSheetNames[j]!="")
+                        {
+                            DataTable dt = ExcelUtil.ExcelToDataTable(targetSheetNames[j], firstRowIsHead, filenames[i], false);
+                            ExcelUtil.DataTableToExcel(dt, targetfilename, targetSheetName);
+                        }
                     }
                 }
             }
@@ -222,6 +266,18 @@ namespace ExcelHandler
         private void checkBox_appointsheet_CheckedChanged(object sender, EventArgs e)
         {
             if(((CheckBox)sender).Checked)
+            {
+                this.textBox_appointSheetName.ReadOnly = false;
+            }
+            else
+            {
+                this.textBox_appointSheetName.ReadOnly = true;
+            }
+        }
+
+        private void checkBox_allAppointInOneSheet_CheckedChanged(object sender, EventArgs e)
+        {
+            if (((CheckBox)sender).Checked)
             {
                 this.textBox_appointSheetName.ReadOnly = false;
             }

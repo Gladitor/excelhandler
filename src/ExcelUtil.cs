@@ -327,7 +327,13 @@ namespace ExcelHandler
                 }
             }
         }
-
+        /// <summary>
+        /// 将DataTable数据导入到excel中,sheetname存在则追加,不存在则创建
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <param name="filename"></param>
+        /// <param name="sheetname"></param>
+        /// <returns></returns>
         public static int DataTableToExcel(DataTable dt,string filename,string sheetname)
         {
             XSSFWorkbook workbook = new XSSFWorkbook();

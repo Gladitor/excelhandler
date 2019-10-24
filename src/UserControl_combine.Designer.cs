@@ -37,12 +37,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox_appointsheet = new System.Windows.Forms.CheckBox();
             this.checkBox_horizontal = new System.Windows.Forms.CheckBox();
+            this.checkBox_allAppointInOneSheet = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_pickfile
             // 
-            this.btn_pickfile.Location = new System.Drawing.Point(829, 34);
+            this.btn_pickfile.Location = new System.Drawing.Point(768, 34);
             this.btn_pickfile.Name = "btn_pickfile";
             this.btn_pickfile.Size = new System.Drawing.Size(177, 33);
             this.btn_pickfile.TabIndex = 0;
@@ -67,9 +68,9 @@
             this.checkBox_allInOneSheet.AutoSize = true;
             this.checkBox_allInOneSheet.Location = new System.Drawing.Point(21, 41);
             this.checkBox_allInOneSheet.Name = "checkBox_allInOneSheet";
-            this.checkBox_allInOneSheet.Size = new System.Drawing.Size(232, 22);
+            this.checkBox_allInOneSheet.Size = new System.Drawing.Size(313, 22);
             this.checkBox_allInOneSheet.TabIndex = 2;
-            this.checkBox_allInOneSheet.Text = "所有表格合并到1个Sheet";
+            this.checkBox_allInOneSheet.Text = "所有Sheet合并到1个EXCEL1个Sheet";
             this.checkBox_allInOneSheet.UseVisualStyleBackColor = true;
             // 
             // checkBox_combinBySheet
@@ -77,13 +78,14 @@
             this.checkBox_combinBySheet.AutoSize = true;
             this.checkBox_combinBySheet.Location = new System.Drawing.Point(21, 85);
             this.checkBox_combinBySheet.Name = "checkBox_combinBySheet";
-            this.checkBox_combinBySheet.Size = new System.Drawing.Size(205, 22);
+            this.checkBox_combinBySheet.Size = new System.Drawing.Size(322, 22);
             this.checkBox_combinBySheet.TabIndex = 3;
-            this.checkBox_combinBySheet.Text = "按Sheet合并所有文件";
+            this.checkBox_combinBySheet.Text = "所有Sheet合并到1个EXCEL对应Sheet";
             this.checkBox_combinBySheet.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBox_allAppointInOneSheet);
             this.groupBox1.Controls.Add(this.textBox_appointSheetName);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.checkBox_appointsheet);
@@ -91,26 +93,26 @@
             this.groupBox1.Controls.Add(this.checkBox_combinBySheet);
             this.groupBox1.Location = new System.Drawing.Point(179, 40);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(638, 566);
+            this.groupBox1.Size = new System.Drawing.Size(529, 466);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "类型";
             // 
             // textBox_appointSheetName
             // 
-            this.textBox_appointSheetName.Location = new System.Drawing.Point(205, 222);
+            this.textBox_appointSheetName.Location = new System.Drawing.Point(214, 241);
             this.textBox_appointSheetName.Multiline = true;
             this.textBox_appointSheetName.Name = "textBox_appointSheetName";
             this.textBox_appointSheetName.ReadOnly = true;
             this.textBox_appointSheetName.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_appointSheetName.Size = new System.Drawing.Size(251, 129);
+            this.textBox_appointSheetName.Size = new System.Drawing.Size(282, 129);
             this.textBox_appointSheetName.TabIndex = 6;
             this.textBox_appointSheetName.Text = "Sheet1";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 225);
+            this.label1.Location = new System.Drawing.Point(20, 244);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(188, 18);
             this.label1.TabIndex = 5;
@@ -121,9 +123,9 @@
             this.checkBox_appointsheet.AutoSize = true;
             this.checkBox_appointsheet.Location = new System.Drawing.Point(21, 131);
             this.checkBox_appointsheet.Name = "checkBox_appointsheet";
-            this.checkBox_appointsheet.Size = new System.Drawing.Size(241, 22);
+            this.checkBox_appointsheet.Size = new System.Drawing.Size(340, 22);
             this.checkBox_appointsheet.TabIndex = 4;
-            this.checkBox_appointsheet.Text = "按指定Sheet合并所有文件";
+            this.checkBox_appointsheet.Text = "按指定Sheet合并到1个EXCEL对应Sheet";
             this.checkBox_appointsheet.UseVisualStyleBackColor = true;
             this.checkBox_appointsheet.CheckedChanged += new System.EventHandler(this.checkBox_appointsheet_CheckedChanged);
             // 
@@ -136,6 +138,17 @@
             this.checkBox_horizontal.TabIndex = 5;
             this.checkBox_horizontal.Text = "横向合并";
             this.checkBox_horizontal.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_allAppointInOneSheet
+            // 
+            this.checkBox_allAppointInOneSheet.AutoSize = true;
+            this.checkBox_allAppointInOneSheet.Location = new System.Drawing.Point(21, 179);
+            this.checkBox_allAppointInOneSheet.Name = "checkBox_allAppointInOneSheet";
+            this.checkBox_allAppointInOneSheet.Size = new System.Drawing.Size(331, 22);
+            this.checkBox_allAppointInOneSheet.TabIndex = 7;
+            this.checkBox_allAppointInOneSheet.Text = "按指定Sheet合并到1个EXCEL1个Sheet";
+            this.checkBox_allAppointInOneSheet.UseVisualStyleBackColor = true;
+            this.checkBox_allAppointInOneSheet.CheckedChanged += new System.EventHandler(this.checkBox_allAppointInOneSheet_CheckedChanged);
             // 
             // UserControl_combine
             // 
@@ -166,5 +179,6 @@
         private System.Windows.Forms.TextBox textBox_appointSheetName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBox_horizontal;
+        private System.Windows.Forms.CheckBox checkBox_allAppointInOneSheet;
     }
 }
