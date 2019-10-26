@@ -41,7 +41,9 @@ namespace ExcelHandler
             else if(combineBySheet && !allInOneSheet && !appointSheet && !appointSheetInOne)
             {
                 if (horizontal)
-                { }
+                {
+                    AllCombineBySheet_horizontal();
+                }
                 else
                 {
                     AllCombineBySheet();
@@ -51,7 +53,9 @@ namespace ExcelHandler
             else if(appointSheet && !allInOneSheet && !combineBySheet && !appointSheetInOne)
             {
                 if (horizontal)
-                { }
+                {
+                    CombineAppointSheet_horizontal();
+                }
                 else
                 {
                     CombineAppointSheet();
@@ -61,7 +65,9 @@ namespace ExcelHandler
             else if(appointSheetInOne && !allInOneSheet && !combineBySheet && !appointSheet)
             {
                 if (horizontal)
-                { }
+                {
+                    CombineAppointSheetInOne_horizontal();
+                }
                 else
                 {
                     CombineAppointSheetInOne();
@@ -116,6 +122,7 @@ namespace ExcelHandler
                 }
             }
         }
+
         //按Sheet合并所有文件
         void AllCombineBySheet()
         {
@@ -124,7 +131,6 @@ namespace ExcelHandler
             {
                 firstRowIsHead = false;
             }
-            //System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
             fileDialog.Multiselect = true;
             System.Windows.Forms.DialogResult result = fileDialog.ShowDialog();
@@ -166,6 +172,7 @@ namespace ExcelHandler
                 }
             }
         }
+
         //合并指定Sheet到新文件对应Sheet
         void CombineAppointSheet()
         {
@@ -175,7 +182,6 @@ namespace ExcelHandler
             {
                 firstRowIsHead = false;
             }
-            //System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
             fileDialog.Multiselect = true;
             System.Windows.Forms.DialogResult result = fileDialog.ShowDialog();
@@ -198,6 +204,7 @@ namespace ExcelHandler
                 }
             }
         }
+
         //合并指定Sheet到新文件1个Sheet
         void CombineAppointSheetInOne()
         {
@@ -207,7 +214,6 @@ namespace ExcelHandler
             {
                 firstRowIsHead = false;
             }
-            //System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
             fileDialog.Multiselect = true;
             System.Windows.Forms.DialogResult result = fileDialog.ShowDialog();
@@ -216,7 +222,7 @@ namespace ExcelHandler
                 string targetSheetName = "Sheet1";
                 string[] filenames = fileDialog.FileNames;
                 string basestr = filenames[0];
-                string targetfilename = basestr.Substring(0, basestr.LastIndexOf("\\") + 1) + "AllAppoint.xlsx";
+                string targetfilename = basestr.Substring(0, basestr.LastIndexOf("\\") + 1) + "AllAppointInOneSheet.xlsx";
                 for (int i = 0; i < filenames.Length; i++)
                 {
                     for (int j = 0; j < targetSheetNames.Length; j++)
@@ -230,6 +236,7 @@ namespace ExcelHandler
                 }
             }
         }
+
         //所有Sheet合并成1个-horizontal
         void AllInOneSheet_horizontal()
         {
@@ -264,6 +271,131 @@ namespace ExcelHandler
                     }
                 }
                 ExcelUtil.DataTableToExcel(allDt, targetsheet, true, targetfilename, null);
+            }
+        }
+
+        //按Sheet合并所有文件-horizontal
+        void AllCombineBySheet_horizontal()
+        {
+            bool firstRowIsHead = true;
+            if (!checkBox_firstrowishead.Checked)
+            {
+                firstRowIsHead = false;
+            }
+            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
+            fileDialog.Multiselect = true;
+            System.Windows.Forms.DialogResult result = fileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                string basestr = string.Empty;
+                string targetfilename = string.Empty;
+                string[] filenames = fileDialog.FileNames;
+                basestr = filenames[0];
+                targetfilename = basestr.Substring(0, basestr.LastIndexOf("\\") + 1) + "AllInOneFileBySheet-horizontal.xlsx";
+                Dictionary<string, List<DataTable>> sheet_dtlist_dic = new Dictionary<string, List<DataTable>>();
+                for (int i = 0; i < filenames.Length; i++)
+                {
+                    ExcelEdit ee = new ExcelEdit();
+                    ee.Open(filenames[i]);
+                    StringCollection sc = ee.ExcelSheetNames(filenames[i]);
+                    ee.Close();
+                    for (int j = 0; j < sc.Count; j++)
+                    {
+                        string targetsheet = sc[j].Substring(0, sc[j].Length - 1);
+                        DataTable dt = ExcelUtil.ExcelToDataTable(sc[j].Substring(0, sc[j].Length - 1), firstRowIsHead, filenames[i], false);
+                        if(!sheet_dtlist_dic.ContainsKey(targetsheet))
+                        {
+                            sheet_dtlist_dic.Add(targetsheet, new List<DataTable>());
+                        }
+                        sheet_dtlist_dic[targetsheet].Add(dt);
+                    }
+                }
+                foreach (var key in sheet_dtlist_dic.Keys)
+                {
+                    DataTable allDt = new DataTable();
+                    List<DataTable> dtlist = sheet_dtlist_dic[key];
+                    for (int j = 0; j < dtlist.Count; j++)
+                    {
+                        allDt = DataTableHelper.UniteDataTable(allDt, dtlist[j], "");
+                    }
+                    ExcelUtil.DataTableToExcel(allDt, targetfilename, key);
+                }
+            }
+        }
+
+        //按指定Sheet合并到新文件对应Sheet-horizontal
+        void CombineAppointSheet_horizontal()
+        {
+            string[] targetSheetNames = this.textBox_appointSheetName.Lines;
+            bool firstRowIsHead = true;
+            if (!checkBox_firstrowishead.Checked)
+            {
+                firstRowIsHead = false;
+            }
+            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
+            fileDialog.Multiselect = true;
+            System.Windows.Forms.DialogResult result = fileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                string[] filenames = fileDialog.FileNames;
+                string basestr = filenames[0];
+                string targetfilename = basestr.Substring(0, basestr.LastIndexOf("\\") + 1) + "AllAppoint-horizontal.xlsx";
+                Dictionary<string, List<DataTable>> sheet_dtlist_dic = new Dictionary<string, List<DataTable>>();
+                for (int i = 0; i < filenames.Length; i++)
+                {
+                    for (int j = 0; j < targetSheetNames.Length; j++)
+                    {
+                        string targetsheet = targetSheetNames[j];
+                        DataTable dt = ExcelUtil.ExcelToDataTable(targetsheet, firstRowIsHead, filenames[i], false);
+                        if (!sheet_dtlist_dic.ContainsKey(targetsheet))
+                        {
+                            sheet_dtlist_dic.Add(targetsheet, new List<DataTable>());
+                        }
+                        sheet_dtlist_dic[targetsheet].Add(dt);
+                    }
+                }
+                foreach (var key in sheet_dtlist_dic.Keys)
+                {
+                    DataTable allDt = new DataTable();
+                    List<DataTable> dtlist = sheet_dtlist_dic[key];
+                    for (int j = 0; j < dtlist.Count; j++)
+                    {
+                        allDt = DataTableHelper.UniteDataTable(allDt, dtlist[j], "");
+                    }
+                    ExcelUtil.DataTableToExcel(allDt, targetfilename, key);
+                }
+            }
+        }
+
+        //合并指定Sheet到新文件1个Sheet-horizontal
+        void CombineAppointSheetInOne_horizontal()
+        {
+            string[] targetSheetNames = this.textBox_appointSheetName.Lines;
+            bool firstRowIsHead = true;
+            if (!checkBox_firstrowishead.Checked)
+            {
+                firstRowIsHead = false;
+            }
+            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
+            fileDialog.Multiselect = true;
+            System.Windows.Forms.DialogResult result = fileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                string targetSheetName = "Sheet1";
+                string[] filenames = fileDialog.FileNames;
+                string basestr = filenames[0];
+                string targetfilename = basestr.Substring(0, basestr.LastIndexOf("\\") + 1) + "AllAppointInOneSheet-horizontal.xlsx";
+                DataTable allDt = new DataTable();
+                for (int i = 0; i < filenames.Length; i++)
+                {
+                    for (int j = 0; j < targetSheetNames.Length; j++)
+                    {
+                        DataTable dt = ExcelUtil.ExcelToDataTable(targetSheetNames[j], firstRowIsHead, filenames[i], false);
+                        //合并datatable
+                        allDt = DataTableHelper.UniteDataTable(allDt, dt, "");
+                    }
+                }
+                ExcelUtil.DataTableToExcel(allDt, targetSheetName, true, targetfilename, null);
             }
         }
 
