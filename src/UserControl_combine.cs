@@ -29,7 +29,9 @@ namespace ExcelHandler
             if(allInOneSheet && !combineBySheet && !appointSheet && !appointSheetInOne)
             {
                 if(horizontal)
-                { }
+                {
+                    AllInOneSheet_horizontal();
+                }
                 else
                 {
                     AllInOneSheet();
@@ -253,10 +255,12 @@ namespace ExcelHandler
                     ExcelEdit ee = new ExcelEdit();
                     ee.Open(filenames[i]);
                     StringCollection sc = ee.ExcelSheetNames(filenames[i]);
+                    ee.Close();
                     for (int j = 0; j < sc.Count; j++)
                     {
                         DataTable dt = ExcelUtil.ExcelToDataTable(sc[j].Substring(0, sc[j].Length - 1), firstRowIsHead, filenames[i], false);
                         //合并datatable
+                        allDt = DataTableHelper.UniteDataTable(allDt, dt,"");
                     }
                 }
                 ExcelUtil.DataTableToExcel(allDt, targetsheet, true, targetfilename, null);
